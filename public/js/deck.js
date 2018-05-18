@@ -6,7 +6,3 @@ function deck(cardsArray) {
         this.currentCard = 0;
     }
 }
-
-const GAME_DECK = new deck(generate_cards());
-
-console.log(GAME_DECK);

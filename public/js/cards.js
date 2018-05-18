@@ -1,7 +1,7 @@
 'use strict';
 
 const SUITS = ['clubs', 'diamonds', 'hearts', 'spades'];
-const RANKS = ['A', 2, 3, 4, 5, 6, 7, 8, 9, 10, 'J', 'Q', 'K'];
+const RANKS = ['ace', 2, 3, 4, 5, 6, 7, 8, 9, 10, 'jack', 'queen', 'king'];
 const VALUES = [11, 2, 3, 4, 5, 6, 7, 8, 9, 10, 10, 10, 10]
 
 /* 
