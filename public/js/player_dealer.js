@@ -8,4 +8,5 @@ function player(wallet) {
 
 function dealer() {
     this.score = 0;
+    this.currNumCards = 0;
 }
