@@ -1,8 +1,7 @@
 'use strict';
 
 const SUITS = ['clubs', 'diamonds', 'hearts', 'spades'];
-const RANKS = ['A', 2, 3, 4, 5, 6, 7, 8, 9, 10, 'J', 'Q', 'K'];
-const VALUES = [11, 2, 3, 4, 5, 6, 7, 8, 9, 10, 10, 10, 10]
+const RANKS = ['ace', 2, 3, 4, 5, 6, 7, 8, 9, 10, 'jack', 'queen', 'king'];
 
 /* 
  * Generates a random integer between 0 (inclusive) and max (exclusive)
@@ -27,13 +26,9 @@ function shuffle_array(array) {
  * Representation of one card as na object. Feel free to extend it
  * with other properties and methods 
  */
-function Card(suit, rank, value) {
+function Card(suit, rank) {
   this.suit = suit;
   this.rank = rank;
-  this.value = value;
-  this.locations = ['deck', 'player', 'dealer'];
-  this.currLocation = 'deck';
-  this.facing = 'down';
 }
 
 /* 
@@ -42,8 +37,8 @@ function Card(suit, rank, value) {
 function generate_cards() {
   let result = [];
   SUITS.forEach(function(suit) {
-    RANKS.forEach(function(rank, ind) {
-      result.push(new Card(suit, rank, VALUES[ind]));
+    RANKS.forEach(function(rank) {
+      result.push(new Card(suit, rank));
     });
   });
 
