@@ -1,5 +1,3 @@
-console.log("player")
-
 function player(wallet) {
     this.score = 0;
     this.wallet = wallet;

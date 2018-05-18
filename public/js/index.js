@@ -20,7 +20,6 @@ const NOMONEY_MODAL= document.getElementById("noMoney");
 const RESETS = document.querySelectorAll(".reset");
 const PL_SCORES = document.querySelectorAll(".plScore");
 const DL_SCORES = document.querySelectorAll(".dlScore");
-console.log(PL_SCORES)
 const CARD_BACK = 'img/revers.png';
 
 let initialWallet = 500;
@@ -49,7 +48,6 @@ const showWin = (pl, dl) => {
     clearInterval(dealerInterval);
     GAME_PLAYER.wallet += currentBet;
     updateWallet();
-    console.log("asfasdf",dl, pl);
     setTimeout(() => {
         WIN_MODAL.style.display = "flex"; 
     }, 200);
@@ -79,7 +77,6 @@ const checkScore = () => {
         if(card.currLocation == 'player') playerScore += card.value;
         if(card.currLocation == 'dealer') dealerScore += card.value;
     });
-    console.log("pl", playerScore, "dl", dealerScore);
     PL_SCORES.forEach(score => {
         score.innerText = playerScore;
     });
@@ -120,7 +117,6 @@ const dealToPlayer = (card) => {
     $(PLAYER_CARDS).append(createCard(card, "up"));
     card.currLocation = 'player';
     GAME_DECK.currentCard++;
-    console.log(card);
     return;
 }
 const dealToDealer = (card) => {
@@ -128,11 +124,11 @@ const dealToDealer = (card) => {
     card.currLocation = 'dealer';
     GAME_DEALER.currNumCards++;
     GAME_DECK.currentCard++;
-    console.log(card);
     return;
 }
 const dealCards = () => {
-    toggleBtns(); 
+    toggleBtns();
+    GAME_DECK.shuffle();
     GAME_DECK.cards.forEach(card => {
         card.currLocation = 'deck';
     });
@@ -233,7 +229,6 @@ const gameInit = () => {
     updateBet();
     updateWallet();
     toggleBtns();
-    console.log(GAME_PLAYER, GAME_DEALER, GAME_DECK);
 }
 
 const keepGoingClickHandler = () => {
@@ -246,7 +241,6 @@ const keepGoingClickHandler = () => {
     // dealCards();
 }
 $(document).ready(function() {
-  console.log('loaded')
   KEEP_GOING_BTNS.forEach(btn => {
       btn.addEventListener("click", keepGoingClickHandler, false);
   });
