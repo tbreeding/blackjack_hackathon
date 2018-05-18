@@ -1,3 +1,112 @@
 @import "normalize";
 @import "cards";
 
+body {
+
+    width: 100%;
+    height: 100vh;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.table {
+  display: flex;
+  background-color: light gray;
+  width: 100%;
+  height: 100vh;
+  flex-direction: column;
+  justify-content: center;
+  align-items: space-between;
+//   margin-left: auto;
+//   margin-right: auto;
+  border: solid purple;
+}
+.top {
+    display: flex;
+    width: 100%;
+    flex-direction: row;
+    justify-content: space-between;
+    flex: 1;
+    height: 50vh;
+    margin: auto;
+    border: solid blue;
+}
+
+#deck {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 20%;
+    flex-basis: 1;
+    height: 50vh;
+    border: solid red;
+}
+
+#deckcard {
+    width: 150px;
+    height:300px;
+    background-image: url('../img/revers.png');
+    background-size: contain;
+    background-repeat: no-repeat;
+}
+#dealbutton {
+    display: block;
+    width: 120px;
+    height: 40px;
+    background-color: green;
+    color: white;
+    text-align: center;
+    font-size: 2em;
+    padding: .2em;
+}
+
+#dealercards {
+    width: 50%;
+    height: 50vh;
+    display: flex;
+    flex-basis: 2;
+    background-color: green;
+    border: solid black;
+}
+
+#reset {
+    width: 20%;
+    height: 50vh;
+    flex-basis: 1;
+    border: solid black;
+}
+
+.bottom {
+    display: flex;
+    width: 100%;
+    flex-direction: row;
+    justify-content: space-between;
+    flex: 1;
+    height: 50vh;
+    margin: auto;
+    border: solid yellow;
+}
+
+#playerbuttons {
+    width: 20%;
+    height: 50vh;
+    flex-basis: 1;
+    border: solid black;
+}
+
+#playercards {
+    width: 50%;
+    height: 50vh;
+    background-color: green;
+    display: flex;
+    flex-basis: 2;
+    border: solid black;
+}
+
+#wallet {
+    width: 20%;
+    height: 50vh;
+    flex-basis: 1;
+    border: solid black;
+}
