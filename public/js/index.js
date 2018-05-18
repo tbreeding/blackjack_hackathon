@@ -18,6 +18,9 @@ const WIN_MODAL = document.getElementById("win");
 const LOSE_MODAL = document.getElementById("lose");
 const NOMONEY_MODAL= document.getElementById("noMoney");
 const RESETS = document.querySelectorAll(".reset");
+const PL_SCORES = document.querySelectorAll(".plScore");
+const DL_SCORES = document.querySelectorAll(".dlScore");
+console.log(PL_SCORES)
 const CARD_BACK = 'img/revers.png';
 
 let initialWallet = 500;
@@ -48,8 +51,6 @@ const showWin = (pl, dl) => {
     updateWallet();
     console.log("asfasdf",dl, pl);
     setTimeout(() => {
-        $('#plScore').val = pl;
-        $('#dlScore').text = dl;
         WIN_MODAL.style.display = "flex"; 
     }, 200);
     gameState = 'betting'
@@ -62,8 +63,6 @@ const showLoss = (pl, dl) => {
     checkBet();
     updateWallet();
     setTimeout(() => {
-        $('#plScore').val = pl;
-        $('#dlScore').text = dl;
         if(GAME_PLAYER.wallet > 0) {
             LOSE_MODAL.style.display = "flex";
         } else {
@@ -81,7 +80,12 @@ const checkScore = () => {
         if(card.currLocation == 'dealer') dealerScore += card.value;
     });
     console.log("pl", playerScore, "dl", dealerScore);
-
+    PL_SCORES.forEach(score => {
+        score.innerText = playerScore;
+    });
+    DL_SCORES.forEach(score => {
+        score.innerText = dealerScore;
+    });
     if(playerScore < 21 && dealerScore < 21) {
         return [playerScore, dealerScore];
     } else if(playerScore == 21 && dealerScore < 21) {
@@ -235,7 +239,11 @@ const gameInit = () => {
 const keepGoingClickHandler = () => {
     WIN_MODAL.style.display = "none";
     LOSE_MODAL.style.display = "none";
-    dealCards();
+    gameState = 'betting';
+    toggleBtns();
+    $(PLAYER_CARDS).html("");
+    $(DEALER_CARDS).html("");
+    // dealCards();
 }
 $(document).ready(function() {
   console.log('loaded')
