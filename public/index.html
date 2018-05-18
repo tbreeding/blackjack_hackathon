@@ -13,34 +13,35 @@
   <div class="top">
     <div id="deck">
       <div id="deckcard"></div>
-      <div id="dealbutton"><button>DEAL</button></div>
+      <div id="dealbutton"><button>Deal</button></div>
     </div>
 
     <div id="dealercards"></div>
 
     <div id="reset">
-      <div id="resetbutton"></div>
+      <div id="resetbutton"><button>Reset</button></div>
     </div>
   </div>
 
 
   <div class="bottom">
     <div id="playerbuttons">
-      <div id="hitbutton"></div>
-      <div id="passbutton"></div>
+      <div id="hitbutton"><button>Hit</button></div>
+      <div id="passbutton">Pass</div>
     </div>
 
     <div id="playercards"></div>
 
-    <div id="wallet">
+    <div id="wallet"><h2>bet, then click deal</h2>
       <div id="betbox">
-        <div id="plusbutton"></div>
         <div id="minusbutton"></div>
-        <div id="betbutton"></div>
-        <div id="betamount"></div>
+        <div id="betamount">$50</div>
+        <div id="plusbutton"></div>
+        <div id="betbutton"><button>Place bet</button></div>
+       
       </div>
       <div id="walletbox">
-        <div id="walletamount"></div>
+        <div id="walletamount">wallet: $500</div>
       </div>
     </div>
   </div>
@@ -52,6 +53,8 @@
 
 
   <script src="/js/jquery-3.3.1.min.js"></script>
+  <script src="/js/deck.js"></script>
+  <script src="/js/player_dealer.js"></script>
   <script src="/js/cards.js"></script>
   <script src="/js/index.js"></script>
 </body>

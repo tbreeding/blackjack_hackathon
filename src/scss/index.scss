@@ -17,9 +17,10 @@ body {
   flex-direction: column;
   justify-content: center;
   align-items: space-between;
+
 //   margin-left: auto;
 //   margin-right: auto;
-  border: solid purple;
+//   border: solid purple;
 }
 .top {
     display: flex;
@@ -28,8 +29,8 @@ body {
     justify-content: space-between;
     flex: 1;
     height: 50vh;
-    margin: auto;
-    border: solid blue;
+    margin-bottom: .7em;
+    // border: solid blue;
 }
 
 #deck {
@@ -40,7 +41,7 @@ body {
     width: 20%;
     flex-basis: 1;
     height: 50vh;
-    border: solid red;
+    // border: solid red;
 }
 
 #deckcard {
@@ -54,8 +55,8 @@ body {
     display: block;
     width: 120px;
     height: 40px;
-    background-color: green;
-    color: white;
+    // background-color: green;
+    color: black;
     text-align: center;
     font-size: 2em;
     padding: .2em;
@@ -67,14 +68,29 @@ body {
     display: flex;
     flex-basis: 2;
     background-color: green;
-    border: solid black;
+    border-radius: 0 0 40px 40px;
+    // border: solid black;
 }
 
 #reset {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
     width: 20%;
-    height: 50vh;
     flex-basis: 1;
-    border: solid black;
+    height: 50vh;
+    // border: solid black;
+}
+#resetbutton {
+    display: block;
+    width: 120px;
+    height: 40px;
+    // background-color: green;
+    color: black;
+    text-align: center;
+    font-size: 2em;
+    padding: .2em;
 }
 
 .bottom {
@@ -84,15 +100,42 @@ body {
     justify-content: space-between;
     flex: 1;
     height: 50vh;
-    margin: auto;
-    border: solid yellow;
+    margin-top: .7em;
+    // border: solid yellow;
 }
 
 #playerbuttons {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
     width: 20%;
-    height: 50vh;
     flex-basis: 1;
-    border: solid black;
+    height: 50vh;
+    // border: solid yellow;
+    
+}
+
+#hitbutton {
+    display: block;
+    width: 120px;
+    height: 40px;
+    // background-color: green;
+    color: black;
+    text-align: center;
+    font-size: 2em;
+    padding: .2em;
+}
+
+#passbutton {
+    display: block;
+    width: 120px;
+    height: 40px;
+    // background-color: green;
+    color: black;
+    text-align: center;
+    font-size: 2em;
+    padding: .2em;
 }
 
 #playercards {
@@ -101,12 +144,61 @@ body {
     background-color: green;
     display: flex;
     flex-basis: 2;
-    border: solid black;
+    border-radius: 40px 40px 0 0;
+    // border: solid black;
 }
 
 #wallet {
+    display: flex;
+    background-color: light green;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
     width: 20%;
-    height: 50vh;
     flex-basis: 1;
-    border: solid black;
+    height: 50vh;
+    
+    // border: solid black;
+}
+
+#betbox {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+    align-items: center;
+    width: 100%;
+    flex-basis: 1;
+    height: 20vh;
+    // border: solid black;
+}
+#plusbutton {
+    background-image: url(../img/plus.png);
+    background-size: cover;
+    display: block;
+    width: 20px;
+    height: 20px;
+    // background-color: green;
+}
+
+#minusbutton {
+    background-image: url(../img/minus.png);
+    background-size: cover;
+    display: block;
+    width: 20px;
+    height: 20px;
+    // background-color: green;
+}
+
+#betamount {
+    font-size: 1.5em;
+}
+
+#walletbox {
+    display: block;
+    justify-content: center;
+    align-items: center;
+}
+
+#walletamount {
+    font-size: 2.5em;
 }
