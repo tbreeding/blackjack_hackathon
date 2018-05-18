@@ -3,6 +3,7 @@ let GAME_PLAYER;
 let GAME_DEALER;
 let GAME_DECK;
 
+const WALLET_AMOUNT = document.getElementById("walletamount");
 const BET_AMOUNT = document.getElementById("betamount");
 const BET_PLUS_BTN = document.getElementById("plusbutton");
 const BET_MINUS_BTN = document.getElementById("minusbutton");
@@ -12,6 +13,11 @@ const PLAYER_CARDS = document.getElementById("playercards");
 const HIT_BTN = document.getElementById("hitbutton");
 const PASS_BTN = document.getElementById("passbutton");
 const RESET_BTN = document.getElementById("resetbutton");
+const KEEP_GOING_BTNS = document.querySelectorAll(".keepGoing");
+const WIN_MODAL = document.getElementById("win");
+const LOSE_MODAL = document.getElementById("lose");
+const NOMONEY_MODAL= document.getElementById("noMoney");
+const RESETS = document.querySelectorAll(".reset");
 const CARD_BACK = 'img/revers.png';
 
 let initialWallet = 500;
@@ -19,19 +25,81 @@ let initialBet = 20;
 let betIncrement = 5;
 let currentBet;
 let gameState;
-
+let currentCard;
+let dealerInterval
 
 
 const updateBet = () => {
     BET_AMOUNT.innerText = currentBet;
 }
-
 const changeBet = (change) => {
     currentBet += change;
     updateBet();
 }
+const checkBet = () => {
+    if(GAME_PLAYER.wallet - currentBet  < 0) {
+        currentBet = GAME_PLAYER.wallet;
+        updateBet();
+    }
+}
+const showWin = (pl, dl) => {
+    clearInterval(dealerInterval);
+    GAME_PLAYER.wallet += currentBet;
+    updateWallet();
+    console.log("asfasdf",dl, pl);
+    setTimeout(() => {
+        $('#plScore').val = pl;
+        $('#dlScore').text = dl;
+        WIN_MODAL.style.display = "flex"; 
+    }, 200);
+    gameState = 'betting'
+    toggleBtns();
+    
+}
+const showLoss = (pl, dl) => {
+    clearInterval(dealerInterval);
+    GAME_PLAYER.wallet -= currentBet;
+    checkBet();
+    updateWallet();
+    setTimeout(() => {
+        $('#plScore').val = pl;
+        $('#dlScore').text = dl;
+        if(GAME_PLAYER.wallet > 0) {
+            LOSE_MODAL.style.display = "flex";
+        } else {
+            NOMONEY_MODAL.style.display = "flex";
+        }
+    }, 200);
+    gameState = 'betting'
+    toggleBtns();
+}
+const checkScore = () => {
+    let playerScore = 0;
+    let dealerScore = 0;
+    GAME_DECK.cards.forEach(card => {
+        if(card.currLocation == 'player') playerScore += card.value;
+        if(card.currLocation == 'dealer') dealerScore += card.value;
+    });
+    console.log("pl", playerScore, "dl", dealerScore);
+
+    if(playerScore < 21 && dealerScore < 21) {
+        return [playerScore, dealerScore];
+    } else if(playerScore == 21 && dealerScore < 21) {
+        showWin(playerScore, dealerScore);
+        return;
+    } else if(dealerScore == 21) {
+        showLoss(playerScore, dealerScore);
+        return;
+    } else if(playerScore > 21) {
+        showLoss(playerScore, dealerScore);
+        return;
+    } else if(dealerScore > 21) {
+        showWin(playerScore, dealerScore);
+        return;
+    }
+    
+}
 const createCard = (card, facing) => {
-    console.log(card);
     let cardImg;
     if(facing == 'up') {
         cardImg = card.image;
@@ -44,33 +112,78 @@ const createCard = (card, facing) => {
             'background-image': 'url(' + cardImg +')'
         });
 }
-const dealToPlayer = () => {
-    $(PLAYER_CARDS).append(createCard(currentCard, "up"));
+const dealToPlayer = (card) => {
+    $(PLAYER_CARDS).append(createCard(card, "up"));
+    card.currLocation = 'player';
     GAME_DECK.currentCard++;
+    console.log(card);
     return;
 }
-const dealToDealer = () => {
-    $(DEALER_CARDS).append(createCard(currentCard, GAME_DEALER.currNumCards ? "up" : "down"));
+const dealToDealer = (card) => {
+    $(DEALER_CARDS).append(createCard(card, GAME_DEALER.currNumCards ? "up" : "down"));
+    card.currLocation = 'dealer';
+    GAME_DEALER.currNumCards++;
     GAME_DECK.currentCard++;
+    console.log(card);
     return;
 }
 const dealCards = () => {
-    let currentCard = GAME_DECK.cards[GAME_DECK.currentCard];
     toggleBtns(); 
-    // let currPlayer = gameState == 'playerturn' ? PLAYER_CARDS : DEALER_CARDS;
-    dealToPlayer();
-    dealToDealer();
-    
-    
+    GAME_DECK.cards.forEach(card => {
+        card.currLocation = 'deck';
+    });
+    $(PLAYER_CARDS).html("");
+    $(DEALER_CARDS).html("");
+    GAME_DEALER.currNumCards = 0;
+
+    let currentCard = GAME_DECK.cards[GAME_DECK.currentCard];
+    dealToPlayer(currentCard);
+    currentCard = GAME_DECK.cards[GAME_DECK.currentCard];
+    dealToDealer(currentCard);  
+    currentCard = GAME_DECK.cards[GAME_DECK.currentCard];
+    dealToPlayer(currentCard);
+    currentCard = GAME_DECK.cards[GAME_DECK.currentCard];
+    dealToDealer(currentCard);
+    checkScore();  
 }
 const resetGame = () => {
-
+    location.reload();
 }
+const dealerPlay = () => {
+    dealerInterval = setInterval(()=> {
+        if(checkScore()[1] < 17) {
+            dealToDealer(GAME_DECK.cards[GAME_DECK.currentCard]);
+        } else {
+            clearInterval(dealerInterval);
+            if(checkScore()[0] > checkScore()[1]) {
+                showWin(checkScore()[0], checkScore()[1]);
+            } else {
+                showLoss(checkScore()[0], checkScore()[1]);
+            }
+        }
 
+    }, 500)
+    
+}
 const resetBtnClickHandler = () => {
     resetGame();
 }
 
+
+const dealBtnClickHandler = () => {
+    gameState = 'playerturn';
+    dealCards();
+}
+
+const hitBtnClickHandler = () => {
+    gameState = 'dealerturn';
+    toggleBtns();
+    dealToPlayer(GAME_DECK.cards[GAME_DECK.currentCard]);
+    checkScore();
+}
+const passBtnClickHandler = () => {
+    dealerPlay();
+}
 const betMinusBtnClickHandler = () => {
     if(currentBet - betIncrement < 5) return;
     changeBet(-betIncrement)
@@ -79,19 +192,6 @@ const betPlusBtnClickHandler = () => {
     if(currentBet + betIncrement > GAME_PLAYER.wallet) return;
     changeBet(betIncrement)
 }
-const dealBtnClickHandler = () => {
-    gameState = 'playerturn';
-    dealCards();
-}
-
-const hitBtnClickHandler = () => {
-
-}
-
-const passBtnClickHandler = () => {
-
-}
-
 const toggleBtns = () => {
     if(gameState == 'betting') {
         BET_PLUS_BTN.addEventListener("click", betPlusBtnClickHandler, false);
@@ -101,6 +201,7 @@ const toggleBtns = () => {
         HIT_BTN.removeEventListener("click", hitBtnClickHandler, false);
         PASS_BTN.removeEventListener("click", passBtnClickHandler, false);
     } else if(gameState == 'playerturn') {
+        DEAL_BTN.removeEventListener("click", dealBtnClickHandler, false);
         BET_PLUS_BTN.removeEventListener("click", betPlusBtnClickHandler, false);
         BET_MINUS_BTN.removeEventListener("click", betMinusBtnClickHandler, false);
         HIT_BTN.addEventListener("click", hitBtnClickHandler, false);
@@ -113,11 +214,8 @@ const toggleBtns = () => {
     }
 }
 
-const activateButtons = () => {
-    DEAL_BTN.addEventListener("click", dealBtnClickHandler, false);
-    RESET_BTN.addEventListener("click", resetBtnClickHandler, false);
-    HIT_BTN.addEventListener("click", hitBtnClickHandler, false);
-    PASS_BTN.addEventListener("click", passBtnClickHandler, false);
+const updateWallet = () => {
+    WALLET_AMOUNT.innerText = GAME_PLAYER.wallet;
 }
 
 const gameInit = () => {
@@ -129,11 +227,23 @@ const gameInit = () => {
     gameState = 'betting';
     currentBet = initialBet;
     updateBet();
+    updateWallet();
     toggleBtns();
     console.log(GAME_PLAYER, GAME_DEALER, GAME_DECK);
 }
 
+const keepGoingClickHandler = () => {
+    WIN_MODAL.style.display = "none";
+    LOSE_MODAL.style.display = "none";
+    dealCards();
+}
 $(document).ready(function() {
   console.log('loaded')
+  KEEP_GOING_BTNS.forEach(btn => {
+      btn.addEventListener("click", keepGoingClickHandler, false);
+  });
+  RESETS.forEach(btn => {
+      btn.addEventListener("click", resetBtnClickHandler, false);
+  })
   gameInit();
 });
