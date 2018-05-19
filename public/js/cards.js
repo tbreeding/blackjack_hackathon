@@ -31,9 +31,7 @@ function Card(suit, rank, value) {
   this.suit = suit;
   this.rank = rank;
   this.value = value;
-  this.locations = ['deck', 'player', 'dealer'];
   this.currLocation = 'deck';
-  this.facing = 'down';
   this.image = 'img/' + this.suit + '-' + this.rank + '.png';
 }
 

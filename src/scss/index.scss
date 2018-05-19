@@ -1,10 +1,41 @@
-// @import "normalize";
-// @import "cards";
-
-
 * {
     box-sizing: border-box;
     font-family: 'VT323', monospace;
+}
+
+body {
+    height: 100vh;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    position: relative;
+    user-select: none;
+}
+
+.container {  
+    width: 100%;
+    height: 100%;
+    background-image: url('../img/casino.jpg');
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+section {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    flex: 1;
+    background-color: rgba(150, 150, 150, .7);
+}
+.side {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    flex-basis: 30%;
 }
 .card {
     height: 125px;
@@ -25,67 +56,17 @@
     margin: 10px;
     border-radius: 10px;
     border: 5px solid darkgreen;
-    padding: 20px 30px;
+    padding: 10px 30px;
     cursor: pointer;
     box-shadow: 3px 3px 5px 0 black;
-    transition: all .2s;
+    transition: transform .2s;
     &:active {
         transform: translate(2px, 2px);
         box-shadow: 1px 1px 5px 0 black;
     }
 }
 
-body {
-    width: 100%;
-    height: 100vh;
-    margin: 0;
-    padding: 0;
-    display: flex;
-    align-items: center;
-    position: relative;
-}
-
-.table {  
-    display: flex;
-    background-color: light gray;
-    width: 100%;
-    height: 100%;
-    background-image: url('../img/casino.jpg');
-    flex-direction: column;
-    justify-content: stretch;
-    align-items: space-between;
-}
-.top {
-    padding: 0 100px; 
-    width: 100%;
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    flex: 1;
-    background-color: rgba(150, 150, 150, .7);
-}
-.bottom {
-    padding: 0 100px; 
-    display: flex;
-    width: 100%;
-    // height: 50%;
-    flex-direction: row;
-    justify-content: space-between;
-    flex: 1;
-    background-color: rgba(150, 150, 150, .7);
-}
-
-#deck {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    width: 20%;
-    flex-basis: 1;
-    // border: solid red;
-}
-
-#deckcard {
+#deckCard {
     width: 150px;
     height: 200px;
     background-image: url('../img/revers.png');
@@ -94,164 +75,91 @@ body {
     background-color: darkgreen;
     background-position: center;
     border-radius: 10px;
-    border: 10px solid darkgreen;
-    
-}
-#dealbutton {
-    width: 120px;
-    height: 40px;
-    // background-color: green;
-    color: black;
+    border: 10px solid darkgreen;   
 }
 
-#dealercards {
+.cardArea {
     width: 550px;
     height: 300px;
     display: flex;
-    flex-basis: 2;
     background-color: green;
-    border-radius: 0 0 40px 40px;
+    
     padding: 5px;
     background-image: url('../img/felt.jpg');
-    background-size: cover;
+    background-size: cover;  
+}
+
+#dealerCards {
+    border-radius: 0 0 40px 40px;
     border-bottom: 5px solid darkgreen;
     border-left: 5px solid darkgreen;
     border-right: 5px solid darkgreen;
 }
 
-#reset {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    width: 20%;
-    flex-basis: 1;
-    // border: solid black;
-}
-#resetbutton {
-    width: 120px;
-    height: 40px;
-}
-
-
-
-#playerbuttons {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    width: 20%;
-    flex-basis: 1;
-    padding: 10px;
-    // border: solid yellow;
-    
-}
-
-#hitbutton {
-    width: 120px;
-    height: 40px;
-}
-
-#passbutton {
-    width: 100px;
-    height: 40px;
-}
-
-#playercards {
-    background-image: url('../img/felt.jpg');
-    background-size: cover;
-    width: 550px;
-    height: 300px;
-    background-color: green;
-    display: flex;
-    flex-wrap: wrap;
-    border-radius: 40px 40px 0 0;
-    padding: 5px;
+#playerCards {
+    border-radius: 40px 40px 0 0 ;
     align-self: flex-end;
     border-top: 5px solid darkgreen;
     border-left: 5px solid darkgreen;
     border-right: 5px solid darkgreen;
 }
 
-#wallet {
-    display: flex;
-    background-color: light green;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    width: 20%;
-    flex-basis: 1;    
+//Wallet and Betting styling
+#wallet {   
     padding: 10px;
     >h2 {
+        margin: 10px;
         padding: 10px;
         background-color: lightgreen;
         border-radius: 10px;
         border: 5px solid darkgreen;
     }
+    &>div {
+        display: flex;
+        padding: 10px;
+        align-items: center;
+        justify-content: space-around;
+        align-items: center;
+        border: 5px solid darkgreen;
+        border-radius: 10px;
+        background-color: lightgreen;
+    }
 }
 
-#betbox {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-evenly;
-    align-items: center;
-    width: 100%;
-    flex-basis: 1;
+#betBox {
+    width: 70%;
     padding: 20px 0;
-    background-color: lightgreen;
-    border-radius: 10px;
     font-size: 2rem;
-    border: 5px solid darkgreen;
 }
-#plusbutton {
+
+.betBtn {
+    background-size: cover;
+    width: 40px;
+    height: 40px;
+    cursor: pointer;
+    box-shadow: 3px 3px 5px 0 black;
+    border-radius: 10px;
+    transition: all .2s;
+    &:active {
+        transform: translate(2px, 2px);
+        box-shadow: 1px 1px 5px 0 black;
+    }
+}
+#plusButton {
     background-image: url(../img/plus.png);
-    background-size: cover;
-    display: block;
-    width: 40px;
-    height: 40px;
-    cursor: pointer;
-    box-shadow: 3px 3px 5px 0 black;
-    border-radius: 10px;
-    transition: all .2s;
-    &:active {
-        transform: translate(2px, 2px);
-        box-shadow: 1px 1px 5px 0 black;
-    }
-
 }
 
-#minusbutton {
+#minusButton {
     background-image: url(../img/minus.png);
-    background-size: cover;
-    display: block;
-    width: 40px;
-    height: 40px;
-    border-radius: 10px;
-    cursor: pointer;
-    box-shadow: 3px 3px 5px 0 black;
-    transition: all .2s;
-    &:active {
-        transform: translate(2px, 2px);
-        box-shadow: 1px 1px 5px 0 black;
-    }
-
 }
 
-#betamount {
+#betAmount {
     font-size: 1.5em;
 }
 
-#walletbox {
-    display: flex;
-    padding: 10px;
-    align-items: center;
-    justify-content: space-between;
-    align-items: center;
-    border: 5px solid darkgreen;
-    width: 100%;
+#walletBox {
+    width: 60%;
     margin-top: 10px;
-    border-radius: 10px;
-    background-color: lightgreen;
     h2 {
         margin: 2px;
         font-size: 1.5rem;
@@ -269,10 +177,11 @@ body {
     }
 }
 
-#walletamount {
+#walletAmount {
     font-size: 2.5em;
 }
 
+// Modal Styling
 .modal {
     position: absolute;
     height: 100vh;

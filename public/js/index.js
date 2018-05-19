@@ -1,18 +1,17 @@
 'use strict';
-let GAME_PLAYER;
-let GAME_DEALER;
-let GAME_DECK;
+let GAME_PLAYER; //Holds the player object
+let GAME_DEALER; //Holds the dealer object
+let GAME_DECK; //Holds the deck object
 
-const WALLET_AMOUNT = document.getElementById("walletamount");
-const BET_AMOUNT = document.getElementById("betamount");
-const BET_PLUS_BTN = document.getElementById("plusbutton");
-const BET_MINUS_BTN = document.getElementById("minusbutton");
-const DEAL_BTN = document.getElementById("dealbutton");
-const DEALER_CARDS = document.getElementById("dealercards");
-const PLAYER_CARDS = document.getElementById("playercards");
-const HIT_BTN = document.getElementById("hitbutton");
-const PASS_BTN = document.getElementById("passbutton");
-const RESET_BTN = document.getElementById("resetbutton");
+const WALLET_AMOUNT = document.getElementById("walletAmount");
+const BET_AMOUNT = document.getElementById("betAmount");
+const BET_PLUS_BTN = document.getElementById("plusButton");
+const BET_MINUS_BTN = document.getElementById("minusButton");
+const DEAL_BTN = document.getElementById("dealButton");
+const DEALER_CARDS = document.getElementById("dealerCards");
+const PLAYER_CARDS = document.getElementById("playerCards");
+const HIT_BTN = document.getElementById("hitButton");
+const PASS_BTN = document.getElementById("passButton");
 const KEEP_GOING_BTNS = document.querySelectorAll(".keepGoing");
 const WIN_MODAL = document.getElementById("win");
 const LOSE_MODAL = document.getElementById("lose");
@@ -20,93 +19,117 @@ const NOMONEY_MODAL= document.getElementById("noMoney");
 const RESETS = document.querySelectorAll(".reset");
 const PL_SCORES = document.querySelectorAll(".plScore");
 const DL_SCORES = document.querySelectorAll(".dlScore");
+
 const CARD_BACK = 'img/revers.png';
+const DEALER_HOLD = 17;
+const INITIAL_WALLET = 500;
+const INITIAL_BET = 20;
+const BET_INCREMENT = 5;
+let currentBet; //Hold the current bet amount
+let gameState; //Primarily for activating and deactivating buttons
+let currentCard; //The current card being dealt
+let dealerInterval; //Interval for slowing down dealer play
 
-let initialWallet = 500;
-let initialBet = 20;
-let betIncrement = 5;
-let currentBet;
-let gameState;
-let currentCard;
-let dealerInterval
-
-
+//Clear the card tables
+const clearTables = () => {
+    $(PLAYER_CARDS).html("");
+    $(DEALER_CARDS).html("");
+    GAME_DEALER.currNumCards = 0;
+}
+//Pushes the bet amount to DOM
 const updateBet = () => {
     BET_AMOUNT.innerText = currentBet;
 }
+//Increments the bet amount
 const changeBet = (change) => {
     currentBet += change;
     updateBet();
+    return;
 }
+//Doesn't allow bet to exceed current wallet amount
 const checkBet = () => {
     if(GAME_PLAYER.wallet - currentBet  < 0) {
         currentBet = GAME_PLAYER.wallet;
         updateBet();
     }
+    return;
 }
-const showWin = (pl, dl) => {
+//Flips all the dealer cards when play holds
+const flipDealerCards = () => {
+    $(DEALER_CARDS).html("");
+    GAME_DECK.cards.forEach(card => {
+        if(card.currLocation == 'dealer') {
+            dealToDealer(card, true)
+        }
+    });
+    return;
+}
+const showWin = () => {
     clearInterval(dealerInterval);
     GAME_PLAYER.wallet += currentBet;
     updateWallet();
+    flipDealerCards();
     setTimeout(() => {
         WIN_MODAL.style.display = "flex"; 
-    }, 200);
+    }, 500);
     gameState = 'betting'
-    toggleBtns();
-    
+    toggleBtns(); 
 }
-const showLoss = (pl, dl) => {
+const showLoss = () => {
     clearInterval(dealerInterval);
     GAME_PLAYER.wallet -= currentBet;
     checkBet();
     updateWallet();
+    flipDealerCards();
     setTimeout(() => {
         if(GAME_PLAYER.wallet > 0) {
             LOSE_MODAL.style.display = "flex";
         } else {
             NOMONEY_MODAL.style.display = "flex";
         }
-    }, 200);
+    }, 500);
     gameState = 'betting'
     toggleBtns();
 }
-const checkScore = () => {
-    let playerScore = 0;
-    let dealerScore = 0;
+const calcScore = (who) => {
+    let score = 0;
     GAME_DECK.cards.forEach(card => {
-        if(card.currLocation == 'player') playerScore += card.value;
-        if(card.currLocation == 'dealer') dealerScore += card.value;
+        if(card.currLocation == who) score += card.value;
     });
+    return score;
+}
+//Pushes the players' scores to end-game popups
+const updateModals = (playerScore, dealerScore) => {
     PL_SCORES.forEach(score => {
         score.innerText = playerScore;
     });
     DL_SCORES.forEach(score => {
         score.innerText = dealerScore;
     });
+}
+//Checks the score and win/lose state
+const checkScore = () => {
+    let playerScore = calcScore('player');
+    let dealerScore = calcScore('dealer');
+
+    updateModals(playerScore, dealerScore);
+    
     if(playerScore < 21 && dealerScore < 21) {
         return [playerScore, dealerScore];
     } else if(playerScore == 21 && dealerScore < 21) {
-        showWin(playerScore, dealerScore);
-        return;
+        showWin();
     } else if(dealerScore == 21) {
-        showLoss(playerScore, dealerScore);
-        return;
+        showLoss();
     } else if(playerScore > 21) {
-        showLoss(playerScore, dealerScore);
-        return;
+        showLoss();
     } else if(dealerScore > 21) {
-        showWin(playerScore, dealerScore);
-        return;
+        showWin();
     }
-    
+    return [playerScore, dealerScore];
 }
+//Generates HTML for the cards
 const createCard = (card, facing) => {
-    let cardImg;
-    if(facing == 'up') {
-        cardImg = card.image;
-    } else {
-        cardImg = CARD_BACK;
-    }
+    let cardImg = facing == 'up' ? card.image : CARD_BACK;
     return $('<div>')
         .addClass("card")
         .css({
@@ -119,78 +142,35 @@ const dealToPlayer = (card) => {
     GAME_DECK.currentCard++;
     return;
 }
-const dealToDealer = (card) => {
-    $(DEALER_CARDS).append(createCard(card, GAME_DEALER.currNumCards ? "up" : "down"));
+const dealToDealer = (card, endOfHand) => {
+    $(DEALER_CARDS).append(createCard(card, GAME_DEALER.currNumCards || endOfHand ? "up" : "down"));
     card.currLocation = 'dealer';
     GAME_DEALER.currNumCards++;
     GAME_DECK.currentCard++;
     return;
 }
 const dealCards = () => {
-    toggleBtns();
     GAME_DECK.shuffle();
-    GAME_DECK.cards.forEach(card => {
-        card.currLocation = 'deck';
-    });
-    $(PLAYER_CARDS).html("");
-    $(DEALER_CARDS).html("");
-    GAME_DEALER.currNumCards = 0;
-
-    let currentCard = GAME_DECK.cards[GAME_DECK.currentCard];
-    dealToPlayer(currentCard);
-    currentCard = GAME_DECK.cards[GAME_DECK.currentCard];
-    dealToDealer(currentCard);  
-    currentCard = GAME_DECK.cards[GAME_DECK.currentCard];
-    dealToPlayer(currentCard);
-    currentCard = GAME_DECK.cards[GAME_DECK.currentCard];
-    dealToDealer(currentCard);
+    clearTables();
+    dealToPlayer(GAME_DECK.cards[GAME_DECK.currentCard]);
+    dealToDealer(GAME_DECK.cards[GAME_DECK.currentCard]);  
+    dealToPlayer(GAME_DECK.cards[GAME_DECK.currentCard]);
+    dealToDealer(GAME_DECK.cards[GAME_DECK.currentCard]);
     checkScore();  
-}
-const resetGame = () => {
-    location.reload();
 }
 const dealerPlay = () => {
     dealerInterval = setInterval(()=> {
-        if(checkScore()[1] < 17) {
+        if(checkScore()[1] < DEALER_HOLD) {
             dealToDealer(GAME_DECK.cards[GAME_DECK.currentCard]);
         } else {
             clearInterval(dealerInterval);
             if(checkScore()[0] > checkScore()[1]) {
-                showWin(checkScore()[0], checkScore()[1]);
+                showWin();
             } else {
-                showLoss(checkScore()[0], checkScore()[1]);
+                showLoss();
             }
         }
-
-    }, 500)
-    
-}
-const resetBtnClickHandler = () => {
-    resetGame();
-}
-
-
-const dealBtnClickHandler = () => {
-    gameState = 'playerturn';
-    dealCards();
-}
-
-const hitBtnClickHandler = () => {
-    gameState = 'dealerturn';
-    toggleBtns();
-    dealToPlayer(GAME_DECK.cards[GAME_DECK.currentCard]);
-    checkScore();
-}
-const passBtnClickHandler = () => {
-    dealerPlay();
-}
-const betMinusBtnClickHandler = () => {
-    if(currentBet - betIncrement < 5) return;
-    changeBet(-betIncrement)
-}
-const betPlusBtnClickHandler = () => {
-    if(currentBet + betIncrement > GAME_PLAYER.wallet) return;
-    changeBet(betIncrement)
+    }, 500)   
 }
 const toggleBtns = () => {
     if(gameState == 'betting') {
@@ -213,39 +193,55 @@ const toggleBtns = () => {
         PASS_BTN.removeEventListener("click", passBtnClickHandler, false);
     }
 }
-
 const updateWallet = () => {
     WALLET_AMOUNT.innerText = GAME_PLAYER.wallet;
 }
-
-const gameInit = () => {
-    RESET_BTN.addEventListener("click", resetBtnClickHandler, false);
-    GAME_PLAYER = new player(initialWallet);
-    GAME_DEALER = new dealer();
-    GAME_DECK = new deck(generate_cards());
-    GAME_DECK.shuffle();
-    gameState = 'betting';
-    currentBet = initialBet;
-    updateBet();
-    updateWallet();
-    toggleBtns();
+//Click Handlers
+const resetBtnClickHandler = () => {
+    location.reload();
 }
-
+const dealBtnClickHandler = () => {
+    gameState = 'playerturn';
+    toggleBtns();
+    dealCards();
+}
+const hitBtnClickHandler = () => {
+    dealToPlayer(GAME_DECK.cards[GAME_DECK.currentCard]);
+    checkScore();
+}
+const passBtnClickHandler = () => {
+    gameState = 'dealerturn'
+    toggleBtns();
+    dealerPlay();
+}
+const betMinusBtnClickHandler = () => {
+    changeBet(currentBet - BET_INCREMENT < BET_INCREMENT ? 0 : -BET_INCREMENT);
+}
+const betPlusBtnClickHandler = () => {
+    changeBet(currentBet + BET_INCREMENT > GAME_PLAYER.wallet ? 0 : BET_INCREMENT);
+}
 const keepGoingClickHandler = () => {
     WIN_MODAL.style.display = "none";
     LOSE_MODAL.style.display = "none";
     gameState = 'betting';
     toggleBtns();
-    $(PLAYER_CARDS).html("");
-    $(DEALER_CARDS).html("");
-    // dealCards();
+    clearTables();
 }
-$(document).ready(function() {
-  KEEP_GOING_BTNS.forEach(btn => {
-      btn.addEventListener("click", keepGoingClickHandler, false);
-  });
-  RESETS.forEach(btn => {
-      btn.addEventListener("click", resetBtnClickHandler, false);
-  })
-  gameInit();
+$(document).ready(() => {
+    KEEP_GOING_BTNS.forEach(btn => {
+        btn.addEventListener("click", keepGoingClickHandler, false);
+    });
+    RESETS.forEach(btn => {
+        btn.addEventListener("click", resetBtnClickHandler, false);
+    });
+
+    GAME_PLAYER = new player(INITIAL_WALLET);
+    GAME_DEALER = new dealer();
+    GAME_DECK = new deck(generate_cards());
+    GAME_DECK.shuffle();
+    gameState = 'betting';
+    currentBet = INITIAL_BET;
+    updateBet();
+    updateWallet();
+    toggleBtns();
 });

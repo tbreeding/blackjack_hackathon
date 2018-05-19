@@ -6,43 +6,49 @@
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <link href="https://fonts.googleapis.com/css?family=VT323" rel="stylesheet">
   <link rel="stylesheet" href="css/index.css">
-  <title>BlackJack</title>
+  <title>90's Internet  BlackJack</title>
 </head>
 <body>
-<div class="table">
-  <div class="top">
-    <div id="deck">
-      <div id="deckcard"></div>
-      <div class="btn" id="dealbutton">Deal</div>
+<div class="container">
+  <section class="top">
+    <div class="side" id="deck">
+      <div id="deckCard"></div>
+      <div class="btn" id="dealButton">Deal</div>
     </div>
-    <div id="dealercards"></div>
-    <div id="reset">
-      <div class="btn" id="resetbutton">Reset</div>
+
+    <div class="cardArea" id="dealerCards"></div>
+
+    <div class="side" id="reset">
+      <div class="btn reset" id="resetButton">Reset</div>
+    </div> 
+  </section>
+
+  <section class="bottom">
+    <div class="side" id="playerButtons">
+      <div class="btn" id="hitButton">Hit</div>
+      <div class="btn" id="passButton">Hold</div>
     </div>
-  </div>
-  <div class="bottom">
-    <div id="playerbuttons">
-      <div class="btn" id="hitbutton">Hit</div>
-      <div class="btn" id="passbutton">Hold</div>
-    </div>
-    <div id="playercards"></div>
-    <div id="wallet">
+
+    <div class="cardArea" id="playerCards"></div>
+
+    <div class="side" id="wallet">
       <h2>bet, then click deal</h2>
-      <div id="betbox">
-        <div id="minusbutton"></div>
-        <div id="betamount"></div>
-        <div id="plusbutton"></div>       
+      <div id="betBox">
+        <div class="betBtn" id="minusButton"></div>
+        <div id="betAmount"></div>
+        <div class="betBtn" id="plusButton"></div>       
       </div>
-      <div id="walletbox">
+      <div id="walletBox">
         <img src="img/chest.png" alt="" srcset="">
         <div>
-        <h2>Chest:</h2>
-        <div id="walletamount"></div>
+          <h2>Chest:</h2>
+          <div id="walletAmount"></div>
         </div>
       </div>
     </div>
-  </div>
+  </section>
 </div>
+<!-- Popups -->
 <div class="modal" id="win">
   <div class="modalWindow" id="showWin">
     <div class="image"></div>
@@ -54,7 +60,7 @@
       <div class="btn keepGoing">Keep Going?</div>
     </div>
   </div>
-</div>
+</div>  
 <div class="modal" id="lose">
     <div class="modalWindow" id="showLoss">
         <div class="image"></div>
@@ -79,6 +85,7 @@
         </div>
       </div>
 </div>
+
   <script src="js/jquery-3.3.1.min.js"></script>
   <script src="js/deck.js"></script>
   <script src="js/player_dealer.js"></script>
